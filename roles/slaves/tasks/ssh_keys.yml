@@ -1,0 +1,33 @@
+---
+- name: "Execute 'ssh' task to upload and authorize keys on slaves"
+  block:
+    - name: "Authorize key '~/.ssh/id_rsa_slave' on slaves"
+      authorized_key: 
+        user: "{{ superuser }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa_slave.pub') }}"
+        state: present
+    - name: "Authorize key '~/.ssh/id_rsa_master' on slaves"
+      authorized_key: 
+        user: "{{ superuser }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa_master.pub') }}"
+        state: present
+    - name: Copy file '~/.ssh/id_rsa_slave.pub' to slaves
+      copy:
+        src: '~/.ssh/id_rsa_slave.pub'
+        dest: '~/.ssh/id_rsa_slave.pub'
+        owner: "{{ superuser }}"
+        group: "{{ superuser }}" 
+        mode: u+rw,g-wx,o-wx
+    - name: Copy file '~/.ssh/id_rsa_slave' to slaves
+      copy:
+        src: '~/.ssh/id_rsa_slave'
+        dest: '~/.ssh/id_rsa_slave'
+        owner: "{{ superuser }}"
+        group: "{{ superuser }}"
+        mode: u+rw,g-rwx,o-rwx
+
+- name: Check content of ~/.ssh
+  shell: ls -la ~/.ssh
+  register: result
+
+- debug: var=result 

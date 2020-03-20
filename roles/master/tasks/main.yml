@@ -1,0 +1,17 @@
+---
+- name: Echo from {{ superuser }} 
+  shell: echo $(id)
+  register: result
+
+- debug: 
+    var: result 
+
+- name: Check content of {{ superuser }} HOME
+  shell: ls -la ~/
+  register: result
+
+- debug: 
+    var: result 
+
+- name: Include ssh_keys.yml
+  include: ssh_keys.yml

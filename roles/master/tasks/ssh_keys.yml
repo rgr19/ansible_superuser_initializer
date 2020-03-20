@@ -1,0 +1,29 @@
+---
+- name: "Execute 'ssh' task to generate and authorize keys on master"
+  block:
+    - name: Creates ~/.ssh
+      file:
+        path: ~/.ssh
+        state: directory
+    - name: "Make ssh master key"
+      openssh_keypair:
+        path: ~/.ssh/id_rsa_master
+    - name: "Make ssh slaves key"
+      openssh_keypair:
+        path: ~/.ssh/id_rsa_slave
+    - name: "Authorize key '~/.ssh/id_rsa_master' on master"
+      authorized_key: 
+        user: "{{ superuser }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa_master.pub') }}"
+        state: present
+    - name: "Authorize key '~/.ssh/id_rsa_slave' on master"
+      authorized_key: 
+        user: "{{ superuser }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa_slave.pub') }}"
+        state: present
+
+- name: Check content of ~/.ssh
+  shell: ls -la ~/.ssh
+  register: result
+  
+- debug: var=result 

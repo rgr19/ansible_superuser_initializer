@@ -1,0 +1,35 @@
+---
+- hosts: all 
+  pre_tasks:
+    - name: "Authorize key '~/.ssh/id_rsa' of current user {{ lookup('env','USER') }} on ALL"
+      authorized_key: 
+        user: "{{ lookup('env','USER') }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        state: present
+  roles:
+    - { role: superuser }
+
+- hosts: master
+  become: yes
+  become_user: "{{ superuser }}"
+  tasks:
+    - name: Echo from sudo 
+      shell: echo $(id)
+      become: true
+      register: result
+    - debug: var=result 
+  roles:
+    - { role: master }
+
+- hosts: slaves
+  become: yes
+  become_user: "{{ superuser }}"
+  tasks:
+    - name: Echo from sudo 
+      shell: echo $(id)
+      become: true
+      register: result
+    - debug: var=result 
+  roles:
+   - { role: slaves }
+    

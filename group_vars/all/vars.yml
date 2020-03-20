@@ -1,0 +1,3 @@
+ansible_ssh_user: "{{ lookup('env','USER') }}"
+ansible_user: "{{ lookup('env','USER') }}"
+superuser: ansible

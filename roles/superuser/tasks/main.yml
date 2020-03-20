@@ -1,0 +1,4 @@
+---
+- name: Setup "{{ superuser }}" user on ALL
+  include: create.yml
+  become: yes
