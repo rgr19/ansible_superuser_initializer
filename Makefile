@@ -7,6 +7,9 @@ check-env:
 ifndef SUPERUSER
 	$(error SUPERUSER is undefined)
 endif
+# ifndef SLAVES_MACS
+# 	$(error SLAVES_MACS is undefined)
+# endif
 
 export PROJECT_NAME = $(shell basename $(PWD))
 export ANSIBLE_VAULT_PASSWORD_FILE = ${HOME}/.ansible/vaults/${PROJECT_NAME}
